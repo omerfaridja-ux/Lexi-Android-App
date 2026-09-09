@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Lexi">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#211d2e">
+<title>Lexi - תרגום אנגלית עברית</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Frank+Ruhl+Libre:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#211d2e;
+    --paper:#efe5cb;
+    --paper-dark:#e3d5ae;
+    --brass:#a8813f;
+    --brass-light:#c9a05a;
+    --oxblood:#8c3b34;
+    --oxblood-dark:#6e2c26;
+    --muted:#7a7263;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ink);
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(255,255,255,0.03), transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(255,255,255,0.02), transparent 40%);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Inter',sans-serif;
+    padding:32px 16px;
+  }
+  .drawer{
+    width:100%;
+    max-width:480px;
+  }
+  .tab{
+    background:var(--brass);
+    color:var(--ink);
+    display:inline-block;
+    padding:6px 20px;
+    border-radius:8px 8px 0 0;
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:15px;
+    letter-spacing:0.5px;
+    box-shadow:0 -2px 0 rgba(0,0,0,0.05) inset;
+  }
+  .title-block{
+    text-align:center;
+    margin-bottom:18px;
+  }
+  .title-block h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:44px;
+    color:var(--paper);
+    margin:0 0 6px;
+    letter-spacing:0.5px;
+  }
+  .title-block p{
+    font-family:'Inter',sans-serif;
+    font-size:13px;
+    color:rgba(239,229,203,0.55);
+    margin:0;
+    letter-spacing:0.3px;
+  }
+  .card{
+    background:var(--paper);
+    border-radius:0 14px 14px 14px;
+    padding:36px 32px 32px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.35);
+    border-top:3px solid var(--brass);
+    position:relative;
+  }
+  .row-label{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    color:var(--muted);
+    font-weight:600;
+    margin-bottom:10px;
+    display:block;
+  }
+  .input-line{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    border-bottom:2px solid var(--brass-light);
+    padding-bottom:10px;
+    margin-bottom:28px;
+  }
+  #english-input{
+    flex:1;
+    border:none;
+    background:transparent;
+    outline:none;
+    font-family:'Fraunces','Frank Ruhl Libre',serif;
+    font-size:28px;
+    font-weight:500;
+    color:var(--ink);
+    direction:ltr;
+    text-align:left;
+  }
+  #english-input.rtl-mode{
+    direction:rtl;
+    text-align:right;
+    font-family:'Frank Ruhl Libre',serif;
+  }
+  #english-input::placeholder{
+    color:rgba(33,29,46,0.35);
+    font-style:italic;
+  }
+  .speak-btn{
+    width:44px;
+    height:44px;
+    min-width:44px;
+    border-radius:50%;
+    border:2px solid var(--oxblood);
+    background:transparent;
+    color:var(--oxblood);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:background .15s, color .15s, transform .1s;
+  }
+  .speak-btn:hover{background:var(--oxblood);color:var(--paper);}
+  .speak-btn:active{transform:scale(0.93);}
+  .speak-btn:disabled{opacity:0.25;cursor:default;background:transparent;color:var(--oxblood);}
+  .speak-btn svg{width:20px;height:20px;fill:currentColor;}
+
+  .mic-btn{
+    width:44px;
+    height:44px;
+    min-width:44px;
+    border-radius:50%;
+    border:2px solid var(--brass);
+    background:transparent;
+    color:var(--brass);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:background .15s, color .15s, transform .1s;
+  }
+  .mic-btn:hover{background:var(--brass);color:var(--paper);}
+  .mic-btn:active{transform:scale(0.93);}
+  .mic-btn svg{width:20px;height:20px;fill:currentColor;}
+  .mic-btn.listening{
+    background:var(--oxblood);
+    border-color:var(--oxblood);
+    color:var(--paper);
+    animation:pulse 1s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(140,59,52,0.45);}
+    70%{box-shadow:0 0 0 10px rgba(140,59,52,0);}
+    100%{box-shadow:0 0 0 0 rgba(140,59,52,0);}
+  }
+
+  .mic-lang-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:-16px 0 20px;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .lang-chip{
+    border:1px solid rgba(33,29,46,0.2);
+    background:transparent;
+    color:var(--muted);
+    font-size:12px;
+    padding:4px 12px;
+    border-radius:20px;
+    cursor:pointer;
+    font-family:'Inter',sans-serif;
+  }
+  .lang-chip.active{
+    background:var(--brass);
+    border-color:var(--brass);
+    color:var(--ink);
+    font-weight:600;
+  }
+
+  .divider{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:0 0 22px;
+  }
+  .divider::before,.divider::after{
+    content:'';
+    flex:1;
+    height:1px;
+    background:rgba(33,29,46,0.15);
+  }
+  .divider-mark{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:13px;
+    color:var(--muted);
+  }
+
+  .result-box{
+    min-height:78px;
+    display:flex;
+    align-items:center;
+  }
+  #hebrew-output{
+    font-family:'Frank Ruhl Libre',serif;
+    font-size:34px;
+    font-weight:500;
+    color:var(--oxblood-dark);
+    direction:rtl;
+    text-align:right;
+    width:100%;
+    line-height:1.3;
+  }
+  #hebrew-output.ltr-mode{
+    font-family:'Fraunces',serif;
+    direction:ltr;
+    text-align:left;
+    font-size:32px;
+  }
+  #hebrew-output.placeholder{
+    color:rgba(33,29,46,0.3);
+    font-size:18px;
+    font-family:'Inter',sans-serif;
+    font-style:italic;
+  }
+  #hebrew-output.loading{
+    color:var(--muted);
+    font-size:16px;
+    font-family:'Inter',sans-serif;
+  }
+
+  .footer-note{
+    margin-top:28px;
+    font-size:12px;
+    color:var(--muted);
+    text-align:center;
+    border-top:1px solid rgba(33,29,46,0.1);
+    padding-top:14px;
+  }
+
+  @media (max-width:480px){
+    body{padding:20px 12px;}
+    .title-block{margin-bottom:12px;}
+    .title-block h1{font-size:32px;}
+    .title-block p{font-size:12px;}
+    .tab{font-size:13px;padding:5px 16px;}
+    .card{padding:24px 18px 20px;border-radius:0 10px 10px 10px;}
+    #english-input{font-size:22px;}
+    .speak-btn{width:38px;height:38px;min-width:38px;}
+    .speak-btn svg{width:17px;height:17px;}
+    .mic-btn{width:38px;height:38px;min-width:38px;}
+    .mic-btn svg{width:17px;height:17px;}
+    .mic-lang-row{margin:-12px 0 16px;font-size:11px;}
+    .input-line{margin-bottom:20px;gap:8px;}
+    #hebrew-output{font-size:26px;}
+    .divider{margin-bottom:16px;}
+    .footer-note{margin-top:20px;font-size:11px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="drawer">
+  <div class="title-block">
+    <h1>Lexi</h1>
+    <p>מלשון "לקסיקון" — מילון אנגלית ⇄ עברית</p>
+  </div>
+  <div class="tab">כרטיס תרגום</div>
+  <div class="card">
+    <span class="row-label" id="input-label">הקישו מילה — באנגלית או בעברית</span>
+    <div class="input-line">
+      <button class="speak-btn" id="speak-btn" disabled aria-label="השמע את המילה">
+        <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-.77-3.29-2-4.28v8.56c1.23-.99 2-2.51 2-4.28zM14 3.23v2.06c2.89 1.2 4.5 4.14 4.5 6.71s-1.61 5.51-4.5 6.71v2.06c4.01-1.29 6.5-5.1 6.5-8.77s-2.49-7.48-6.5-8.77z"/></svg>
+      </button>
+      <input type="text" id="english-input" placeholder="lighthouse / מגדלור" autocomplete="off" spellcheck="false">
+      <button class="mic-btn" id="mic-btn" aria-label="חיפוש קולי">
+        <svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
+      </button>
+    </div>
+    <div class="mic-lang-row" id="mic-lang-row">
+      <span>מקשיב ל:</span>
+      <button class="lang-chip active" id="lang-chip-he" data-lang="he-IL">עברית</button>
+      <button class="lang-chip" id="lang-chip-en" data-lang="en-US">English</button>
+    </div>
+
+    <div class="divider"><span class="divider-mark" id="output-label">התרגום</span></div>
+
+    <div class="result-box">
+      <div id="hebrew-output" class="placeholder">התרגום יופיע כאן</div>
+    </div>
+
+    <div class="footer-note">הקישו או דברו — Lexi תזהה ותתרגם אוטומטית</div>
+  </div>
+</div>
+
+<script>
+const input = document.getElementById('english-input');
+const output = document.getElementById('hebrew-output');
+const speakBtn = document.getElementById('speak-btn');
+const inputLabel = document.getElementById('input-label');
+const outputLabel = document.getElementById('output-label');
+const micBtn = document.getElementById('mic-btn');
+const langChipHe = document.getElementById('lang-chip-he');
+const langChipEn = document.getElementById('lang-chip-en');
+
+let recognitionLang = 'he-IL';
+let recognition = null;
+let isListening = false;
+
+function setRecognitionLang(lang){
+  recognitionLang = lang;
+  langChipHe.classList.toggle('active', lang === 'he-IL');
+  langChipEn.classList.toggle('active', lang === 'en-US');
+}
+
+langChipHe.addEventListener('click', () => setRecognitionLang('he-IL'));
+langChipEn.addEventListener('click', () => setRecognitionLang('en-US'));
+
+const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+if(SpeechRecognitionAPI){
+  recognition = new SpeechRecognitionAPI();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.onstart = () => {
+    isListening = true;
+    micBtn.classList.add('listening');
+  };
+
+  recognition.onend = () => {
+    isListening = false;
+    micBtn.classList.remove('listening');
+  };
+
+  recognition.onerror = () => {
+    isListening = false;
+    micBtn.classList.remove('listening');
+  };
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript.trim();
+    if(transcript){
+      input.value = transcript;
+      input.dispatchEvent(new Event('input'));
+    }
+  };
+
+  micBtn.addEventListener('click', () => {
+    if(isListening){
+      recognition.stop();
+      return;
+    }
+    recognition.lang = recognitionLang;
+    try{
+      recognition.start();
+    }catch(e){}
+  });
+} else {
+  micBtn.style.display = 'none';
+  document.getElementById('mic-lang-row').style.display = 'none';
+}
+
+let debounceTimer = null;
+let currentWord = '';
+let currentSpeakLang = 'en-US';
+
+const HEBREW_RE = /[\u0590-\u05FF]/;
+
+function isHebrew(text){
+  return HEBREW_RE.test(text);
+}
+
+function speak(text){
+  if(!('speechSynthesis' in window) || !text) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = currentSpeakLang;
+  window.speechSynthesis.speak(utter);
+}
+
+speakBtn.addEventListener('click', () => {
+  if(currentWord) speak(currentWord);
+});
+
+async function tryGoogle(word, sl, tl){
+  const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sl}&tl=${tl}&dt=t&q=${encodeURIComponent(word)}`);
+  if(!res.ok) throw new Error('google http ' + res.status);
+  const data = await res.json();
+  const translated = data && data[0] && data[0][0] && data[0][0][0];
+  if(!translated) throw new Error('google empty');
+  return translated;
+}
+
+async function tryMyMemory(word, sl, tl){
+  const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=${sl}|${tl}`);
+  if(!res.ok) throw new Error('mymemory http ' + res.status);
+  const data = await res.json();
+  const translated = data && data.responseData && data.responseData.translatedText;
+  if(!translated || /no translat/i.test(translated)) throw new Error('mymemory empty');
+  return translated;
+}
+
+async function translate(word){
+  const hebrewInput = isHebrew(word);
+  const sl = hebrewInput ? 'he' : 'en';
+  const tl = hebrewInput ? 'en' : 'he';
+
+  currentSpeakLang = hebrewInput ? 'he-IL' : 'en-US';
+  input.classList.toggle('rtl-mode', hebrewInput);
+  inputLabel.textContent = hebrewInput ? 'הקישו מילה בעברית' : 'הקישו מילה באנגלית';
+  outputLabel.textContent = hebrewInput ? 'באנגלית' : 'בעברית';
+
+  output.className = 'loading';
+  output.textContent = 'מתרגם...';
+  let lastError = null;
+  for(const fn of [tryGoogle, tryMyMemory]){
+    try{
+      const translated = await fn(word, sl, tl);
+      output.className = hebrewInput ? 'ltr-mode' : '';
+      output.textContent = translated;
+      return;
+    } catch(err){
+      lastError = err;
+    }
+  }
+  output.className = 'placeholder';
+  output.textContent = 'שגיאה: ' + (lastError ? lastError.message : 'לא ידוע');
+}
+
+input.addEventListener('input', () => {
+  const word = input.value.trim();
+  currentWord = word;
+  speakBtn.disabled = !word;
+
+  const hebrewInput = isHebrew(word);
+  input.classList.toggle('rtl-mode', hebrewInput || word === '');
+  currentSpeakLang = hebrewInput ? 'he-IL' : 'en-US';
+
+  clearTimeout(debounceTimer);
+  if(!word){
+    output.className = 'placeholder';
+    output.textContent = 'התרגום יופיע כאן';
+    inputLabel.textContent = 'הקישו מילה — באנגלית או בעברית';
+    outputLabel.textContent = 'התרגום';
+    return;
+  }
+  debounceTimer = setTimeout(() => translate(word), 500);
+});
+
+input.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter'){
+    clearTimeout(debounceTimer);
+    const word = input.value.trim();
+    if(word) translate(word);
+  }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+# Android
+android/
+node_modules/
+*.gradle
+*.log
+*.apk
+*.ap_
+*.dex
+.DS_Store
+dist/
+build/
+.env
+.vscode/

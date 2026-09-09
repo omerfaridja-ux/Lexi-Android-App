@@ -1,0 +1,22 @@
+{
+  "appId": "com.lexiapp.translator",
+  "appName": "Lexi",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "android": {
+    "buildOptions": {
+      "keystorePath": "android/app/release-key.keystore",
+      "keystorePassword": "lexi-password",
+      "keystoreAlias": "lexi-key",
+      "keystoreAliasPassword": "lexi-password",
+      "releaseType": "APK"
+    }
+  }
+}
